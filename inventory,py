@@ -1,0 +1,27 @@
+
+import sqlite3
+
+class Inventory:
+    def __init__(self, db, name, location, item_id, quantity):
+        self.db = db
+        self.name = name
+        self.location = location
+        self.item_id = item_id
+        self.quantity = quantity
+
+    def creat_inventory(self):
+        if not self.inventory_exists():
+            self.db.cursor.execute('''
+                INSERT INTO Inventory (Name, Location, ItemID, Quantity)
+                VALUES (?, ?, ?, ?)
+            ''', (self.name, self.location, self.item_id, self.quantity))
+            self.db.conn.commit()
+
+    def inventory_exists(self):
+        self.db.cursor.execute('''
+            SELECT * FROM Inventory
+            WHERE Name = ? AND Location = ? AND ItemID = ? AND Quantity = ?
+        ''', (self.name, self.location, self.item_id, self.quantity))
+        return self.db.cursor.fetchone() is not None
+    
+
